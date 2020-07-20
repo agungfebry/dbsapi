@@ -82,7 +82,7 @@
 							<th>Jenis Destinasi</th>
 						</tr>
 						<?php $i = 1; ?>
-						<?php foreach ($menu as $row) : ?>
+						<?php foreach ($wisata as $row) : ?>
 							<tr>
 								<td><?= $i; ?></td>
 								<td><?= $row['nama']; ?></td>
@@ -130,12 +130,12 @@
 							<th>Jenis Fasilitas</th>
 						</tr>
 						<?php $i = 1; ?>
-						<?php foreach ($menu as $row) : ?>
+						<?php foreach ($fasum as $row) : ?>
 							<tr>
 								<td><?= $i; ?></td>
 								<td><?= $row['nama']; ?></td>
 								<td><?= $row['alamat'] ?></td>
-								<td><?= $row['jenis_wisata'] ?></td>
+								<td><?= $row['jenis_fasilitas'] ?></td>
 							</tr>
 							<?php $i++; ?>
 						<?php endforeach; ?>

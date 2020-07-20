@@ -40,11 +40,8 @@
 
 					<div class="form-group">
 						<label for="alamat">Alamat</label>
-						<textarea type="text" name="alamat" id="alamat" class="form-control h-100" rows="5" cols="5">
-							<?= set_value('alamat'); ?>
-						</textarea>
+						<input type="text" name="alamat" id="alamat" class="form-control" value="<?= set_value('alamat'); ?>">
 						<?= form_error('alamat', '<small class="text-danger">','</small>'); ?>
-
 					</div>
 
 					<div class="form-row">
@@ -88,11 +85,6 @@
 						<input type="text" name="wahana" id="wahana" class="form-control" value="<?= set_value('wahana'); ?>">
 						<?= form_error('wahana', '<small class="text-danger">','</small>'); ?>
 					</div>
-				</div>
-			</div>
-			<div class="col-6">
-				<div class="card-body">
-
 					<div class="form-row">
 						<div class="form-group col-md-7">
 							<label for="hari_operasional">Hari Operasional</label>
@@ -115,8 +107,10 @@
 							Tambah
 						</button>
 					</div>
-
-
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="card-body">
 					<div class="form-group">
 						<label for="deskripsi">Deskripsi</label>
 						<textarea type="text" name="deskripsi" id="deskripsi" class="form-control h-100" rows="5" cols="5">
@@ -128,14 +122,18 @@
 					<div class="form-row">
 						<div class="form-group col-md-6">
 							<label for="longitude">Longitude</label>
-							<input type="text" name="longitude" id="longitude" class="form-control" value="<?= set_value('longitude'); ?>">
+							<input type="text" name="longitude" id="longitude" class="form-control" readonly value="<?= set_value('longitude'); ?>">
 							<?= form_error('longitude', '<small class="text-danger">','</small>'); ?>
 						</div>
 						<div class="form-group col-md-6">
 							<label for="latitude">Latitude</label>
-							<input type="text" name="latitude" id="latitude" class="form-control" value="<?= set_value('latitude'); ?>">
+							<input type="text" name="latitude" id="latitude" class="form-control" readonly value="<?= set_value('latitude'); ?>">
 							<?= form_error('latitude', '<small class="text-danger">','</small>'); ?>
 						</div>
+					</div>
+					
+					<div class="form-group">
+						<?= $map['html']; ?>
 					</div>
 
 					<div class="form-group">
@@ -157,3 +155,26 @@
 		</div>
 		<?= form_close(); ?>
 	</div>
+</div>
+
+
+<!-- Modal Open Maps -->
+<div class="modal fade" tabindex="-1" role="dialog" id="exampleModal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Modal title</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Modal body text goes here.</p>
+			</div>
+			<div class="modal-footer bg-whitesmoke br">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

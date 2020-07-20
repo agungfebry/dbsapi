@@ -26,15 +26,18 @@
 <script src="<?= base_url(); ?>/assets/js/jquery.nicescroll.js"></script>
 <script src="<?= base_url(); ?>/assets/js/stisla.js"></script>
 
-
 <!-- Template JS File -->
 <script src="<?= base_url(); ?>/assets/js/scripts.js"></script>
 <script src="<?= base_url(); ?>/assets/js/typeahead.bundle.js"></script>
+<script src="<?= base_url(); ?>/assets/js/summernote-bs4.js"></script>
+<script src="<?= base_url(); ?>/assets/js/page/bootstrap-modal.js"></script>
 
 <!-- Page Specific JS File -->
 <script src="<?= base_url(); ?>/assets/js/page/index-0.js"></script>
 <script src="<?= base_url(); ?>/assets/js/page/components-multiple-upload.js"></script>
+<script src="<?= base_url(); ?>/assets/js/dataTables.bootstrap4.min.css"></script>
 <script src="<?= base_url(); ?>/assets/js/custom.js"></script>
+
 
 </body>
 </html>

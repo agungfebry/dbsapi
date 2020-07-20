@@ -42,10 +42,10 @@
 								<td><?= $row['longitude']; ?></td>
 								<td><?= $row['latitude']; ?></td>
 								<td>
-									<img src="<?= base_url('assets/img/upload/').$row['photo']; ?>" class="img-fluid" width="60">
+									<img src="<?= base_url('assets/img/upload/').$row['foto']; ?>" class="img-fluid" width="60">
 								</td>
 								<td>
-									<a href="<?= base_url(); ?>wisata/editWisata/<?= $row['id']; ?>" class="badge badge-success px-2 py-1">Edit</a>
+									<a href="<?= base_url(); ?>fasilitasumum/editFasilitas/<?= $row['id']; ?>" class="badge badge-success px-2 py-1">Edit</a>
 									<a href="<?= base_url(); ?>wisata/deleteWisata/<?= $row['id']; ?>" class="badge badge-danger px-2 py-1 delete">Delete</a>
 								</td>
 								<?php $i++; ?>

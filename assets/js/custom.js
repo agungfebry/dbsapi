@@ -69,3 +69,10 @@ $("#tambah_operasional").on("click", function () {
 			"</div>"
 	);
 });
+
+function setToForm(longitude,latitude) {
+	$('input[name="longitude"]').val(longitude);
+	$('input[name="latitude"]').val(latitude);
+}
+
+console.log(setToForm);

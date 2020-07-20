@@ -5,8 +5,8 @@ class Wisata extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Wisata_model', '__model');
-		$this->load->library('form_validation');
+		$this->load->model('Wisata_model');
+		$this->load->library(['form_validation', 'googlemaps']);
 		$this->load->helper(array('url', 'file'));
 		is_logged_in();
 	}
@@ -32,80 +32,54 @@ class Wisata extends CI_Controller {
 
 	public function index()
 	{
-		$data['content'] = 'wisata';
-		$data['title']   = 'Tabel Wisata';
-		$data['menu']    = $this->__model->getAllWisata();
-		$this->load->view('admin/template/content', $data);
-	}
-
-	public function addWisata()
-	{
-		$this->_setRules();
-
-		if($this->form_validation->run() == false ) 
-		{
-			$data['content'] = 'addWisata';
-			$data['title']   = 'Tambah  Wisata';
-			$this->load->view('admin/template/content', $data);	
+		$data     = [
+			'content' => 'wisata',
+			'title'   => 'Tabel Wisata',
+			'map'     => $this->googlemaps->create_map(),
+			'menu'    => $this->Wisata_model->getAllWisata()];
+			$this->load->view('admin/template/content', $data);
 		}
-		else
+
+		public function addWisata()
 		{
+			$config['center']    = '-5.4816917,104.6802833';
+			$config['zoom']      = 15;
+			$this->googlemaps->initialize($config);
+			
+			$marker['position']  = '-5.4816917,104.6802833';
+			$marker['draggable'] = true;
+			$marker['ondragend'] = 'setToForm(event.latLng.lat(),event.latLng.lng())';
+			$this->googlemaps->add_marker($marker);
 
-			$data = [
-				'nama'             => $this->input->post('nama'),
-				'jenis_wisata'     => $this->input->post('jenis_wisata'),
-				'alamat'           => $this->input->post('alamat'),
-				'tiket'            => $this->input->post('tiket'),
-				'harga_tiket'      => $this->input->post('harga_tiket'),
-				'fasilitas'        => json_encode($this->input->post('fasilitas')),
-				'idr_fasilitas'    => json_encode($this->input->post('idr_fasilitas')),
-				'wahana'           => $this->input->post('wahana'),
-				'hari_operasional' => json_encode($this->input->post('hari_operasional')),
-				'jam_operasional'  => json_encode($this->input->post('jam_operasional')),
-				'deskripsi'        => $this->input->post('deskripsi'),
-				'longitude'        => $this->input->post('longitude'),
-				'latitude'         => $this->input->post('latitude'),
-				'photo'            => $_FILES['photo']['name'],
-			];
+			$this->_setRules();
 
-
-			$config['upload_path']   = './assets/img/upload';
-			$config['allowed_types'] = 'jpg|jpeg|png';
-			$config['overwrite']     = true;
-
-			$this->load->library('upload', $config);
-			$this->upload->initialize($config);
-
-			if(!$this->upload->do_upload('photo'))
+			if($this->form_validation->run() == false ) 
 			{
-				$error = array('error' => $this->upload->display_errors());
-				$this->load->view('wisata/addWisata', $error);
+				$data['content'] = 'addWisata';
+				$data['title']   = 'Tambah  Wisata';
+				$data['map']     = $this->googlemaps->create_map();
+				$this->load->view('admin/template/content', $data);	
 			}
 			else
 			{
-				// $data = ['upload_data' => $this->upload->data()];
-			}			
-			$this->__model->tambahWisata1($data);
-			$this->session->set_flashdata('flash', 'ditambahkan');
-			redirect('wisata/addWisata'); 
 
-		}
-	}
+				$data = [
+					'nama'             => $this->input->post('nama'),
+					'jenis_wisata'     => $this->input->post('jenis_wisata'),
+					'alamat'           => $this->input->post('alamat'),
+					'tiket'            => $this->input->post('tiket'),
+					'harga_tiket'      => $this->input->post('harga_tiket'),
+					'fasilitas'        => json_encode($this->input->post('fasilitas')),
+					'idr_fasilitas'    => json_encode($this->input->post('idr_fasilitas')),
+					'wahana'           => $this->input->post('wahana'),
+					'hari_operasional' => json_encode($this->input->post('hari_operasional')),
+					'jam_operasional'  => json_encode($this->input->post('jam_operasional')),
+					'deskripsi'        => $this->input->post('deskripsi'),
+					'longitude'        => $this->input->post('longitude'),
+					'latitude'         => $this->input->post('latitude'),
+					'photo'            => $_FILES['photo']['name'],
+				];
 
-	public function editWisata($id)
-	{
-		$data['menu'] = $this->__model->getWisataById($id);
-		$this->_setRules($id);
-
-		if($this->form_validation->run() == false ) 
-		{
-			$data['content'] = 'editWisata';
-			$data['title']   = 'Edit Wisata';
-			$this->load->view('admin/template/content', $data);
-		}
-		else
-		{	
-			if (!empty($_FILES["image"]["name"])) {
 
 				$config['upload_path']   = './assets/img/upload';
 				$config['allowed_types'] = 'jpg|jpeg|png';
@@ -117,87 +91,78 @@ class Wisata extends CI_Controller {
 				if(!$this->upload->do_upload('photo'))
 				{
 					$error = array('error' => $this->upload->display_errors());
-					$this->load->view('wisata/editWisata', $error);
+					$this->load->view('wisata/addWisata', $error);
 				}
 				else
 				{
-					$data = array('upload_data' => $this->upload->data());
-				}
-			} 
-			else {
-				$this->image = $post["old_image"];
+				// $data = ['upload_data' => $this->upload->data()];
+				}			
+				$this->Wisata_model->tambahWisata1($data);
+				$this->session->set_flashdata('flash', 'ditambahkan');
+				redirect('wisata/addWisata'); 
+
 			}
-			$this->__model->editWisata();
-			$this->session->set_flashdata('flash', 'dirubah');
-			redirect('wisata'); 
 		}
-	}
 
-	public function deleteWisata($id)
-	{
-		$this->__model->deleteById($id);
-
-		$this->session->set_flashdata('flash', 'dihapus');
-		redirect('wisata');
-	}
-
-	// jenis wisata
-
-	public function jenisWisata()
-	{
-		$data['content'] = 'jenisWisata';
-		$data['title']   = 'Jenis Wisata';
-		$data['menu']    = $this->__model->getAllJenisWisata();
-		$this->load->view('admin/template/content', $data);
-	}
-
-	public function tambahJenisWisata()
-	{
-		$this->form_validation->set_rules('jenis_wisata', 'Jenis Wisata', 'trim|required');
-
-		if($this->form_validation->run()==false)
+		public function editWisata($id)
 		{
-			$data['content'] = 'jenisWisata';
-			$data['title']   = 'Tambah Jenis Wisata';
-			$data['menu']    = $this->__model->getAllJenisWisata();
-			$this->load->view('admin/template/content', $data);	
+			$config['center']    = '-5.4816917,104.6802833';
+			$config['zoom']      = 15;
+			$this->googlemaps->initialize($config);
+			
+			$marker['position']  = '-5.4816917,104.6802833';
+			$marker['draggable'] = true;
+			$marker['ondragend'] = 'setToForm(event.latLng.lat(),event.latLng.lng())';
+			$this->googlemaps->add_marker($marker);
+
+			$data['menu'] = $this->Wisata_model->getWisataById($id);
+			
+			$this->_setRules($id);
+
+			if($this->form_validation->run() == false ) 
+			{
+				$data['content'] = 'editWisata';
+				$data['title']   = 'Edit Wisata';
+				$data['map']     = $this->googlemaps->create_map();
+				$this->load->view('admin/template/content', $data);
+			}
+			else
+			{	
+				if (!empty($_FILES["image"]["name"])) {
+
+					$config['upload_path']   = './assets/img/upload';
+					$config['allowed_types'] = 'jpg|jpeg|png';
+					$config['overwrite']     = true;
+
+					$this->load->library('upload', $config);
+					$this->upload->initialize($config);
+
+					if(!$this->upload->do_upload('photo'))
+					{
+						$error = array('error' => $this->upload->display_errors());
+						$this->load->view('wisata/editWisata', $error);
+					}
+					else
+					{
+						$data = array('upload_data' => $this->upload->data());
+					}
+				} 
+				else {
+					$this->image = $post["old_image"];
+				}
+				$this->Wisata_model->editWisata();
+				$this->session->set_flashdata('flash', 'dirubah');
+				redirect('wisata'); 
+			}
 		}
-		else
+
+		public function deleteWisata($id)
 		{
-			$this->__model->tambahJenisWisata();
-			$this->session->set_flashdata('flash', 'ditambahkan');
-			redirect('wisata/jenisWisata'); 
+			$this->Wisata_model->deleteById($id);
+
+			$this->session->set_flashdata('flash', 'dihapus');
+			redirect('wisata');
 		}
-	}
 
-	public function deleteJenisWisata($id)
-	{
-		$this->__model->deleteJenisWisata($id);
-		$this->session->set_flashdata('flash', 'dihapus');
-		redirect('wisata/jenisWisata');
+		
 	}
-
-	public function editJenisWisata()
-	{
-		echo json_encode($this->__model->getJenisWisataById($_POST['id']));
-	}
-
-	public function ubahJenisWisata()
-	{
-		$this->form_validation->set_rules('jenis_wisata', 'Jenis Wisata', 'trim|required');
-
-		if($this->form_validation->run()==false)
-		{
-			$data['content'] = 'jenisWisata';
-			$data['title']   = 'Tambah Jenis Wisata';
-			$data['menu']    = $this->__model->getAllJenisWisata();
-			$this->load->view('admin/template/content', $data);	
-		}
-		else
-		{
-			$this->__model->editJenisWisata();
-			$this->session->set_flashdata('flash', 'dirubah');
-			redirect('wisata/jenisWisata'); 
-		}	
-	}
-}
